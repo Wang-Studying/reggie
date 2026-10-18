@@ -78,14 +78,99 @@ reggie/
 └── pom.xml
 ```
 
-## 快速启动
+## 环境要求
 
-1. 创建 MySQL 数据库 `reggie`，导入业务表
-2. 修改 `application.yaml` 中的数据库连接配置
-3. 启动 Redis 服务
-4. 运行 `ReggieApplication.main()`
-5. 后台管理端：http://localhost/backend/index.html
-6. 用户移动端：http://localhost/front/index.html
+| 环境 | 版本要求 |
+|------|----------|
+| JDK | 17+ |
+| Maven | 3.6+ |
+| MySQL | 8.0+ |
+| Redis | 5.0+ |
+
+## 部署步骤
+
+### 1. 克隆项目
+
+```bash
+git clone https://github.com/Wang-Studying/reggie.git
+cd reggie
+```
+
+### 2. 数据库准备
+
+1. 启动 MySQL，创建数据库：
+
+```sql
+CREATE DATABASE reggie DEFAULT CHARACTER SET utf8mb4;
+```
+
+2. 导入建表 SQL（需要准备 `reggie.sql` 文件，包含所有业务表）：
+
+```bash
+mysql -u root -p reggie < reggie.sql
+```
+
+> 没有 SQL 文件的话，需要手动创建以下核心表：
+> - employee（员工表）
+> - category（菜品 / 套餐分类表）
+> - dish（菜品表）
+> - dish_flavor（菜品口味表）
+> - setmeal（套餐表）
+> - setmeal_dish（套餐菜品关联表）
+> - shopping_cart（购物车表）
+> - address_book（地址簿表）
+> - orders（订单表）
+> - order_detail（订单明细表）
+> - user（用户表）
+
+### 3. 修改配置
+
+编辑 `src/main/resources/application.yaml`：
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/reggie?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    username: root       # 改成你的 MySQL 用户名
+    password: 你的密码     # 改成你的 MySQL 密码
+
+reggie:
+  path: /your/upload/path/   # 改成你本地图片存储目录
+```
+
+### 4. 启动 Redis
+
+确保 Redis 服务已启动（默认端口 6379）。
+
+### 5. 启动项目
+
+```bash
+# 方式一：Maven 启动
+mvn spring-boot:run
+
+# 方式二：IDE 中运行
+运行 ReggieApplication.java
+```
+
+### 6. 访问测试
+
+| 端 | 地址 |
+|----|------|
+| 后台管理端 | http://localhost/backend/index.html |
+| 用户移动端 | http://localhost/front/index.html |
+
+默认管理员账号：admin / 123456（需要手动插入 employee 表）
+
+## 常见问题
+
+**Q: 启动报数据库连接失败？**
+A: 检查 MySQL 是否启动、数据库名是否正确、账号密码是否配置正确。
+
+**Q: 页面打开空白？**
+A: 检查项目端口是否被占用，或者后端接口是否正常返回数据。
+
+**Q: 图片上传不显示？**
+A: 检查 `reggie.path` 配置的目录是否存在，以及 WebMvcConfig 中的静态资源映射路径。
 
 ## 项目收获
 
