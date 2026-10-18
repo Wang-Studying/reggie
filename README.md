@@ -104,7 +104,7 @@ cd reggie
 CREATE DATABASE reggie DEFAULT CHARACTER SET utf8mb4;
 ```
 
-2. 导入建表 SQL（需要准备 `reggie.sql` 文件，包含所有业务表）：
+2. 导入建表 SQL（项目根目录已附带 `reggie.sql`）：
 
 ```bash
 mysql -u root -p reggie < reggie.sql
